@@ -1,38 +1,42 @@
 'use strict';
 
-const { io } = require('socket.io-client');
-const socket = io('http://localhost:3002/caps');
-const Chance = require('chance');
+const { Chance } = require('chance');
 const chance = new Chance();
-const room = chance.company();
-
-socket.on('PICKUP', vendorPickup);
-function vendorPickup(payload) {
-    setTimeout(() => {
-        console.log(`Package ready to be picked up at ${payload.store}`);
-    }, 2000);
-};
-
-socket.on('DELIVERED', vendorDelivered);
-function vendorDelivered(payload) {
-    setInterval(() => {
-        console.log(`VENDOR: Thank you for delivering ${payload.orderID}`);
-    }, 2000);
-};
-
-socket.emit('JOIN', room);
+const VendorClient = require('./vendor');
+const acmeVendor = new VendorClient('acme-widgets');
+const flowersVendor = new VendorClient('1-800-flowers');
 
 setInterval(() => {
-    const order = {
-        store: chance.company(),
-        orderID: chance.guid(),
-        customer: chance.name(),
-        address: `${chance.city()}, ${chance.state()}`,
-    };
-    socket.emit('PICKUP', order);
-}, 2000);
+  const order = {
+    store: 'acme-widgets',
+    orderID: chance.guid(),
+    customer: chance.name(),
+    address: `${chance.city()}, ${chance.state()}`,
+  };
+  console.log(`New order ready for PICKUP for ${order.store}`);
+  acmeVendor.publish('PACKAGE_READY', { messageId: chance.guid(), ...order });
+}, 3000);
 
-module.exports = {
-    vendorPickup,
-    vendorDelivered,
-};
+acmeVendor.subscribe('DELIVERED', (payload) => {
+  setTimeout(() => {
+    console.log(`Thank you for DELIVERING order# ${payload.orderID} for acme-widgets`);
+  }, 3000);
+
+});
+
+setInterval(() => {
+  const order = {
+    store: '1-800 flowers',
+    orderID: chance.guid(),
+    customer: chance.name(),
+    address: `${chance.city()}, ${chance.state()}`,
+  };
+  console.log(`New order ready for PICKUP for ${order.store}`);
+  flowersVendor.publish('PACKAGE_READY', { messageId: chance.guid(), ...order });
+}, 3000);
+
+// flowerVendor.subscribe('DELIVERED', (payload) => {
+//     setTimeout(() => {
+//       console.log(`Thank you for DELIVERING order# ${payload.orderID} for 1-800-flowers`);
+//     }, 3000);
+// });

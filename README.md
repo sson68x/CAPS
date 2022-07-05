@@ -1,4 +1,4 @@
-# LAB 11 & 12
+# LAB 11, 12 & 13
 
 ## Project: CAPS
 
@@ -14,10 +14,14 @@
 
 * Continue working on a multi-day build of our delivery tracking system, creating an event observable over a network with Socket.io.
 
+#### Lab 13
+
+* Build a set of features to help manage deliveries made by CAPS Drivers. This will simulate a delivery driver receiving a list of orders from a Queue and “scanning” package codes on delivery. Retailers will be able to see in their dashboard or log, a list of all packages delivered in real time. Should a delivery driver deliver many packages while the retailer is not connected to the dashboard, the vendor client should be guaranteed to receive “delivery” notifications from the Queue system.
+
 ### Links and Resources
 
-* [GitHub](https://github.com/sson68x/CAPS/pull/2)
-* [Class Demo](https://github.com/codefellows/seattle-javascript-401d47/tree/main/class-12)
+* [GitHub](https://github.com/sson68x/CAPS/pull/4)
+* [Class Demo](https://github.com/codefellows/seattle-javascript-401d47/tree/main/class-13)
 
 ### Setup
 
@@ -27,20 +31,18 @@
 
 #### How to initialize/run your application (where applicable)
 
-* node/nodemon
+* node index.js
 
 ### Feature
 
 #### The core functionality
 
-* As a vendor, I want to alert the system when I have a package to be picked up.
-* As a driver, I want to be notified when there is a package to be delivered.
-* As a driver, I want to alert the system when I have picked up a package and it is in transit.
-* As a driver, I want to alert the system when a package has been delivered.
-* As a vendor, I want to be notified when my package has been delivered.
-* As a developer, I want to create network event driven system using Socket.io so that I can write code that responds to events originating from both servers and client applications.
+* As a vendor, I want to “subscribe” to “delivered” notifications so that I know when my packages are delivered.
+* As a vendor, I want to “catch up” on any “delivered” notifications that I might have missed so that I can see a complete log.
+* As a driver, I want to “subscribe” to “pickup” notifications so that I know what packages to deliver.
+* As a driver, I want to “catch up” on any “pickup” notifications I may have missed so that I can deliver everything.
+* As a driver, I want a way to “scan” a delivery so that the vendors know when a package has been delivered.
 
 #### UML Diagram
 
-<!-- ![Lab 11 UML](./src/img/Lab11.png); -->
-![Lab 12 UML](./src/img/Lab12.png);
+![Lab 13 UML](./assets/img/Lab12.png);
