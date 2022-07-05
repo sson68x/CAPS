@@ -1,35 +1,26 @@
 'use strict';
 
-const { io } = require('socket.io-client');
-const socket = io('http://localhost:3002/caps');
+const DriverClient = require('./driver');
+const driver = new DriverClient('driver');
 
-socket.on('PICKUP', driverPickedUp);
-function driverPickedUp(payload) {
-    setInterval(() => {
-        console.log(`Package PICKED UP. Order# ${payload.orderID}`);
-        socket.emit('TRANSIT', payload);
-    }, 2000);
-};
+driver.subscribe('PACKAGE_READY', payload => {
+  setTimeout(() => {
+    console.log(`Package order# ${payload.orderId} picked up.`);
+    driver.publish('IN_TRANSIT', payload);
+  }, 3000);
+});
 
-socket.on('TRANSIT', driverInTransit);
-function driverInTransit(payload) {
-    setInterval(() => {
-        console.log(`Package In TRANSIT. Order# ${payload.orderID}`);
-        socket.emit('DELIVERED', payload);
-    }, 2000);
-};
+driver.subscribe('IN_TRANSIT', payload => {
+  setTimeout(() => {
+    console.log(`Package order# ${payload.orderId} is on the way.`);
+    driver.publish('DELIVERED', payload);
+  }, 3000);
+});
 
-socket.on('DELIVERED', driverDelivered);
-function driverDelivered(payload) {
-    setInterval(() => {
-        console.log(`Package DELIVERED. Order# ${payload.orderID}`);
-    }, 2000);
-};
-
-module.exports = {
-    driverPickedUp,
-    driverInTransit,
-    driverDelivered,
-};
+driver.subscribe('DELIVERED', payload => {
+  setTimeout(() => {
+    console.log(`Package order# ${payload.orderId} from ${payload.store} has been delivered.`);
+  }, 3000);
+});
 
 
